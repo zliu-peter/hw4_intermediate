@@ -1,0 +1,66 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="stmarkdown.css">
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+</head>
+<h1><a href="#homework-4" id="homework-4">Homework 4</a></h1>
+<h3><a href="#zixing-peter-liu" id="zixing-peter-liu">Zixing (Peter) Liu</a></h3>
+<p><strong>Background:</strong> This is the HW4 for Stata Intermediate class: How to embed Stata results in .html</p>
+<p><strong>Methods:</strong> We created a do-file then in it initialized our dataset with 30 observations. The next step involved simulating age from a normal distribution with a mean of 57 years and a standard deviation of 15. We then randomly generate age_t from a t-distribution with df=30. A histogram comparing the two simulated distributions of age were then constructed. Finally, we typed the following command into the Stata command window:    <code>dyndoc index.do, saving(index.html) replace</code> to generate the html. All codes were done in STATA 18.0.</p>
+<pre><code>. clear 
+
+. // initialize dataset
+. set seed 20240424
+
+. set obs 30
+
+. capture drop age age_t
+
+. // variable generation
+. gen age = (rnormal() * 15) + 57 // normal distribution
+
+. gen age_t=(rt(_N)*15)+57 // t distribution
+
+. //graphical representation
+. hist age, ///
+&gt;    fcolor(orange%40) /// simulated normal 
+&gt;    addplot(hist age_t, fcolor(midblue%50)) /// simulated t-distribution 
+&gt;    normal /// theoretical normal
+&gt;    legend(on ///
+&gt;       lab(1 &quot;Sampled from Normal&quot;) ///
+&gt;           lab(2 &quot;Theoretical Normal&quot;) ///
+&gt;           lab(3 &quot;Sampled from t-distribution&quot;) ///
+&gt;           )
+
+. 
+. graph export hw4_intermediate.png, replace 
+
+
+</code></pre>
+<p><img src="Graph.svg" ></p>
+<p><strong>The Simulated Dataset:</strong></p>
+<pre><code>. display c(N) 
+30
+
+. display c(k)  
+2
+
+. list in 1/5 
+
+     +---------------------+
+     |      age      age_t |
+     |---------------------|
+  1. | 39.90951   34.74397 |
+  2. | 69.11408   54.29286 |
+  3. | 43.09823   53.98543 |
+  4. | 50.53851    50.0417 |
+  5. | 6.033284    56.7036 |
+     +---------------------+
+
+</code></pre>
+<p><strong>Results:</strong> We see that the observed age distribution generated from the normal distribution roughly matches the theoretical one: $ \text{Age, years} \sim \mathcal{N}(\mu = 57, \sigma^2 = 225) $</p>
+<p><strong>Footnote:</strong> The results are based on simulated data.</p>
